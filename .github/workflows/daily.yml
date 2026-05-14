@@ -1,6 +1,7 @@
 name: NodeSeek 自动签到评论加鸡腿
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
