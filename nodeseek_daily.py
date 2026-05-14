@@ -117,7 +117,7 @@ def setup_driver_and_cookies():
             options.add_argument('--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
         
         print("正在启动Chrome...")
-        driver = uc.Chrome(options=options)
+        driver = uc.Chrome(options=options, version_main=147)
         
         if headless:
             # 执行 JavaScript 来修改 webdriver 标记
