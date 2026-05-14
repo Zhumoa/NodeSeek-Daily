@@ -21,7 +21,7 @@ cookie = os.environ.get("NS_COOKIE") or os.environ.get("COOKIE")
 # 通过环境变量控制是否使用无头模式，默认为 True（无头模式）
 headless = os.environ.get("HEADLESS", "true").lower() == "true"
 
-randomInputStr = ["bd","绑定","帮顶"]
+randomInputStr = ["bd","帮顶"]
 
 def click_sign_icon(driver):
     """
@@ -191,9 +191,9 @@ def nodeseek_comment(driver):
                 print(f"正在处理第 {i+1} 个帖子")
                 driver.get(post_url)
                 
-                # 处理加鸡腿
-                if is_chicken_leg is False:
-                    is_chicken_leg = click_chicken_leg(driver)
+                # # 处理加鸡腿
+                # if is_chicken_leg is False:
+                #     is_chicken_leg = click_chicken_leg(driver)
                 
                 # 等待 CodeMirror 编辑器加载
                 editor = WebDriverWait(driver, 30).until(
