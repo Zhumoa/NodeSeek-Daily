@@ -1,4 +1,4 @@
-name: NodeSeek 自动签到评论加鸡腿
+name: NodeSeek 自动签到评论
 
 on:
   workflow_dispatch:
@@ -38,7 +38,7 @@ jobs:
       - name: Run NodeSeek script
         env:
           NS_COOKIE: ${{ secrets.NS_COOKIE }}
-          NS_RANDOM: ${{ secrets.NS_RANDOM }}
+          NS_RANDOM: "true"
           HEADLESS: "true"
         run: |
           python nodeseek_daily.py
