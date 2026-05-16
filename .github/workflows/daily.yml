@@ -39,6 +39,7 @@ jobs:
         env:
           NS_COOKIE: ${{ secrets.NS_COOKIE }}
           NS_RANDOM: "true"
+          NS_ENABLE_CHICKEN_LEG: "true"
           HEADLESS: "true"
         run: |
           python nodeseek_daily.py
