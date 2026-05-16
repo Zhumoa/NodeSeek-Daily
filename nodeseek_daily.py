@@ -32,6 +32,7 @@ headless = env_flag("HEADLESS", True)
 randomInputStr = ["bd", "帮顶"]
 COMMENT_TARGET_COUNT = int(os.environ.get("NS_COMMENT_COUNT", "20"))
 COMMENT_MIN_INTERVAL = float(os.environ.get("NS_COMMENT_MIN_INTERVAL", "3.2"))
+ENABLE_CHICKEN_LEG = env_flag("NS_ENABLE_CHICKEN_LEG", True)
 
 
 def scroll_center(driver, element):
@@ -270,6 +271,8 @@ def nodeseek_comment(driver):
                 last_submit_time = time.monotonic()
                 success_count += 1
                 print(f"已在帖子 {post_url} 中完成评论，当前成功 {success_count}/{COMMENT_TARGET_COUNT}")
+                if success_count == 1:
+                    click_chicken_leg(driver)
                 time.sleep(random.uniform(3, 5))
 
             except Exception as e:
@@ -287,8 +290,50 @@ def nodeseek_comment(driver):
 
 
 def click_chicken_leg(driver):
-    print("加鸡腿功能已禁用，跳过")
-    return False
+    if not ENABLE_CHICKEN_LEG:
+        print("加鸡腿功能未开启，跳过")
+        return False
+
+    try:
+        print("尝试点击加鸡腿按钮...")
+        chicken_btn = WebDriverWait(driver, 5).until(
+            EC.element_to_be_clickable(
+                (By.XPATH, '//div[@class="nsk-post"]//div[@title="加鸡腿"][1]')
+            )
+        )
+
+        if not click_element(driver, chicken_btn, "加鸡腿按钮"):
+            return False
+
+        WebDriverWait(driver, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, ".msc-confirm"))
+        )
+
+        try:
+            error_title = driver.find_element(
+                By.XPATH, "//h3[contains(text(), '该评论创建于7天前')]"
+            )
+            if error_title:
+                print("该帖子超过 7 天，无法加鸡腿")
+                ok_btn = driver.find_element(By.CSS_SELECTOR, ".msc-confirm .msc-ok")
+                click_element(driver, ok_btn, "确认按钮")
+                return False
+        except Exception:
+            ok_btn = WebDriverWait(driver, 5).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, ".msc-confirm .msc-ok"))
+            )
+            click_element(driver, ok_btn, "确认按钮")
+            print("确认加鸡腿成功")
+
+        WebDriverWait(driver, 5).until_not(
+            EC.presence_of_element_located((By.CSS_SELECTOR, ".msc-overlay"))
+        )
+        time.sleep(1)
+        return True
+
+    except Exception as e:
+        print(f"加鸡腿操作失败: {str(e)}")
+        return False
 
 
 if __name__ == "__main__":
